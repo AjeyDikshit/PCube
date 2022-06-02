@@ -1,3 +1,3 @@
 {
-    "files": ["mainwindow.py","functions.py","form.ui","user_defined_func.py","form1.ui"]
+    "files": ["form_Grid.ui","mainwindow.py","form.ui","functions.py","user_defined_func.py"]
 }

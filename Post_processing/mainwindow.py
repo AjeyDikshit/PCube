@@ -9,6 +9,7 @@ import numpy as np
 from functions import *
 import pyqtgraph as pg
 import random
+import math
 import pandas as pd
 from user_defined_func import *
 
@@ -18,8 +19,10 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         uic.loadUi('form.ui', self)
 
+        self.setWindowTitle('PCube')
+
         # Loading data in function combo box
-        self.function_box.addItems(['', 'Low pass filter', 'High pass filter', 'Derivation', 'Integration', 'Windowed Phasor', 'User defined function'])
+        self.function_box.addItems(['', 'Low pass filter', 'High pass filter', 'Differentiation', 'Integration', 'Windowed Phasor', 'User defined function'])
 
         # Plotting of signals from users
         self.plot_button.clicked.connect(self.plotter)
@@ -105,14 +108,14 @@ class MainWindow(QMainWindow):
                 self.threshold.setEnabled(True)
                 y = myhighpass(t, x, float(self.threshold.text()))
                 self.plotwidget.plot(t, y, pen=pen)
-            elif self.function_box.currentText() == 'Derivation':
+            elif self.function_box.currentText() == 'Differentiation':
                 y = derivative(t, x)
                 self.plotwidget.plot(t, y, pen=pen)
             elif self.function_box.currentText() == 'Integration':
                 y = integration(t, x)
                 self.plotwidget.plot(t, y, pen=pen)
             elif self.function_box.currentText() == 'Windowed Phasor':
-                y, t_new = window_phasor(x, t, int(self.samplingrate.text()), int(self.forcycles.text()))
+                y, t_new = window_phasor(x, t, int(self.samplingrate.text()), float(self.forcycles.text()))
                 self.plotwidget.plot(t_new, y, pen=pen)
             elif self.function_box.currentText() == 'User defined function':
                 hyper = eval(self.hyperparams.text())
@@ -138,14 +141,14 @@ class MainWindow(QMainWindow):
                 self.threshold.setEnabled(True)
                 y = myhighpass(t, x, float(self.threshold.text()))
                 self.plotwidget.plot(t, y, pen=pen)
-            elif self.function_box.currentText() == 'Derivation':
+            elif self.function_box.currentText() == 'Differentiation':
                 y = derivative(t, x)
                 self.plotwidget.plot(t, y, pen=pen)
             elif self.function_box.currentText() == 'Integration':
                 y = integration(t, x)
                 self.plotwidget.plot(t, y, pen=pen)
             elif self.function_box.currentText() == 'Windowed Phasor':
-                y, t_new = window_phasor(x, t, int(self.samplingrate.text()), int(self.forcycles.text()))
+                y, t_new = window_phasor(x, t, int(self.samplingrate.text()), float(self.forcycles.text()))
                 self.plotwidget.plot(t_new, y, pen=pen)
             elif self.function_box.currentText() == 'User defined function':
                 hyper = eval(self.hyperparams.text())
@@ -168,7 +171,6 @@ class MainWindow(QMainWindow):
             self.threshold.setEnabled(False)
             self.samplingrate.setEnabled(False)
             self.forcycles.setEnabled(False)
-            self.check_hyperparam.setEnabled(True)
             self.hyperparams.setEnabled(True)
         else:
             self.threshold.setEnabled(False)
@@ -259,57 +261,18 @@ class MainWindow(QMainWindow):
         self.file_signal_1.clear()
         self.file_signal_2.clear()
 
-#    def plotFile(self):
-#        pen = pg.mkPen(color=(random.randint(20, 235), random.randint(20, 235), random.randint(20, 235)), width=3)
-
-#        if not (self.keep_plot.isChecked()):
-#            self.plotwidget.clear()
-
-#        df = pd.read_csv(self.file_1.text())
-
-#        t = df[self.file_signal_1.currentText()]
-#        x = df[self.file_signal_2.currentText()]
-
-#        if self.function_box.currentText() == '':
-#            self.plotwidget.plot(df[self.file_signal_1.currentText()], df[self.file_signal_2.currentText()], pen=pen)
-#        elif self.function_box.currentText() == 'Low pass filter':
-#            self.threshold.setEnabled(True)
-#            y = mylowpass(t, x, float(self.threshold.text()))
-#            self.plotwidget.plot(t, y, pen=pen)
-#        elif self.function_box.currentText() == 'High pass filter':
-#            self.threshold.setEnabled(True)
-#            y = myhighpass(t, x, float(self.threshold.text()))
-#            self.plotwidget.plot(t, y, pen=pen)
-#        elif self.function_box.currentText() == 'Derivation':
-#            y = derivative(t, x)
-#            self.plotwidget.plot(t, y, pen=pen)
-#        elif self.function_box.currentText() == 'Integration':
-#            y = integration(t, x)
-#            self.plotwidget.plot(t, y, pen=pen)
-#        elif self.function_box.currentText() == 'Windowed Phasor':
-#            y, t_new = window_phasor(x, t, int(self.samplingrate.text()), int(self.forcycles.text()))
-#            self.plotwidget.plot(t_new, y, pen=pen)
-#        elif self.function_box.currentText() == 'User defined function':
-#            hyper = eval(self.hyperparams.text())
-#            y, tnew = user_func(t, x, hyper)
-#            self.plotwidget.plot(tnew, y, pen=pen)
-
     def About(self):
         QMessageBox.information(self, 'About', 'Created by Ajey Dikshit \n   June 2022')
 
-# -------------------------------------------------------------------------------------------
-
-#    def guide(self):
-#        uic.loadUi('dialog1.ui', self)
-
-# -------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------
 
 #PDF = "C:/Users/dixit/OneDrive/Desktop/Ajey/Project/DRs/QT/Post_processing/hello.txt"
 
 class guide1(QtWebEngineWidgets.QWebEngineView):
     def __init__(self):
         super(guide1, self).__init__()
-        self.load(QUrl('https://drive.google.com/file/d/1nICBYURYCmYurG6sZw59BcExNYbMTdPt/view?usp=sharing'))
+        self.setWindowTitle('Tutorial')
+        self.load(QUrl('https://drive.google.com/file/d/1zM1OHlAPwDCblt4KhIw_cARTkU13apvj/view?usp=sharing'))
 
 if __name__ == "__main__":
     app = QApplication([])

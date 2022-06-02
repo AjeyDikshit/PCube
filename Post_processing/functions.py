@@ -78,22 +78,43 @@ def mw_dft(data, t, omega):
 
 # Take frequency as input as well
 def window_phasor(x, t, sr, cycles):
+    x = list(x)
+    t = list(t)
     va = x[0::sr]
     t = t[0::sr]
-    h = t[1] - t[0]
-    fs = 1 / h
     tnew = t
+    h = tnew[1]-tnew[0]
 
     va_mw = np.zeros(len(va), dtype='complex_')
     dom_freq = 50
     period = round(cycles / (dom_freq * h))
 
-    for i in range(period+1, len(t)):
+    for i in range(period, len(t)):
         va_mw[i] = mw_dft(va[i - period:i], t[i - period:i], dom_freq * 2 * np.pi)
     return [abs(va_mw), tnew]
 
+#def window_phasor(x, t, sr, cycles, out_format):
+#    x = list(x)
+#    t = list(t)
+#    va = x[0::sr]
+#    t = t[0::sr]
+#    tnew = t
+#    h = tnew[1]-tnew[0]
+
+#    va_mw = np.zeros(len(va), dtype='complex_')
+#    dom_freq = 50
+#    period = round(cycles / (dom_freq * h))
+
+#    for i in range(period, len(t)):
+#        va_mw[i] = mw_dft(va[i - period:i], t[i - period:i], dom_freq * 2 * np.pi)
+#    if out_format == -1:
+#        return [np.angle(va_mw, deg=True), tnew]
+#    else:
+#        return [abs(va_mw), tnew]
 
 def freq4mdft(va, t, sr, cycles):
+    va = list(va)
+    t = list(t)
     va = va[::sr]
     t = t[::sr]
     tnew = t
