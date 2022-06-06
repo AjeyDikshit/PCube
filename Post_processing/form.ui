@@ -179,7 +179,7 @@
       <x>520</x>
       <y>30</y>
       <width>479</width>
-      <height>231</height>
+      <height>241</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="Function2apply">
@@ -256,6 +256,16 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLineEdit" name="lambda_value"/>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_11">
+       <property name="text">
+        <string>Lambda value (Trend filter):</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
