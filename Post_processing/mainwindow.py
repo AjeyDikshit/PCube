@@ -22,7 +22,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('PCube')
 
         # Loading data in function combo box
-        self.function_box.addItems(['', 'Low pass filter', 'High pass filter', 'Differentiation', 'Integration', 'Windowed Phasor', 'User defined function'])
+        self.function_box.addItems(['', 'Low pass filter', 'High pass filter', 'Differentiation', 'Integration', 'Windowed Phasor'
+                                    , 'Trend filter', 'User defined function'])
 
         # Plotting of signals from users
         self.plot_button.clicked.connect(self.plotter)
@@ -61,6 +62,7 @@ class MainWindow(QMainWindow):
         self.forcycles.setEnabled(False)
         self.hyperparams.setEnabled(False)
         self.clear_file.setEnabled(False)
+        self.lambda_value.setEnabled(False)
 
         # Browse File
         self.browse_button.clicked.connect(self.getfile)
@@ -69,8 +71,7 @@ class MainWindow(QMainWindow):
         self.clear_file.clicked.connect(self.clearFile)
 
         # Help guide
-        self.guide = guide1()
-        self.help_button.clicked.connect(self.guide.show)
+        self.help_button.clicked.connect(self.guide_show)
 
         # About
         self.about_button.clicked.connect(self.About)
@@ -100,23 +101,33 @@ class MainWindow(QMainWindow):
 
             if self.function_box.currentText() == '':
                 self.plotwidget.plot(t, x, pen=pen)
+
             elif self.function_box.currentText() == 'Low pass filter':
                 self.threshold.setEnabled(True)
                 y = mylowpass(t, x, float(self.threshold.text()))
                 self.plotwidget.plot(t, y, pen=pen)
+
             elif self.function_box.currentText() == 'High pass filter':
                 self.threshold.setEnabled(True)
                 y = myhighpass(t, x, float(self.threshold.text()))
                 self.plotwidget.plot(t, y, pen=pen)
+
             elif self.function_box.currentText() == 'Differentiation':
                 y = derivative(t, x)
                 self.plotwidget.plot(t, y, pen=pen)
+
             elif self.function_box.currentText() == 'Integration':
                 y = integration(t, x)
                 self.plotwidget.plot(t, y, pen=pen)
+
             elif self.function_box.currentText() == 'Windowed Phasor':
                 y, t_new = window_phasor(x, t, int(self.samplingrate.text()), float(self.forcycles.text()))
                 self.plotwidget.plot(t_new, y, pen=pen)
+
+            elif self.function_box.currentText() == 'Trend filter':
+                y = trendfilter(t, x, eval(self.lambda_value.text()))
+                self.plotwidget.plot(t, y, pen=pen)
+
             elif self.function_box.currentText() == 'User defined function':
                 hyper = eval(self.hyperparams.text())
                 y, tnew = user_func(t, x, hyper)
@@ -133,27 +144,38 @@ class MainWindow(QMainWindow):
 
             if self.function_box.currentText() == '':
                 self.plotwidget.plot(df[self.file_signal_1.currentText()], df[self.file_signal_2.currentText()], pen=pen)
+
             elif self.function_box.currentText() == 'Low pass filter':
                 self.threshold.setEnabled(True)
                 y = mylowpass(t, x, float(self.threshold.text()))
                 self.plotwidget.plot(t, y, pen=pen)
+
             elif self.function_box.currentText() == 'High pass filter':
                 self.threshold.setEnabled(True)
                 y = myhighpass(t, x, float(self.threshold.text()))
                 self.plotwidget.plot(t, y, pen=pen)
+
             elif self.function_box.currentText() == 'Differentiation':
                 y = derivative(t, x)
                 self.plotwidget.plot(t, y, pen=pen)
+
             elif self.function_box.currentText() == 'Integration':
                 y = integration(t, x)
                 self.plotwidget.plot(t, y, pen=pen)
+
             elif self.function_box.currentText() == 'Windowed Phasor':
                 y, t_new = window_phasor(x, t, int(self.samplingrate.text()), float(self.forcycles.text()))
                 self.plotwidget.plot(t_new, y, pen=pen)
+
+            elif self.function_box.currentText() == 'Trend filter':
+                y = trendfilter(t, x, eval(self.lambda_value.text()))
+                self.plotwidget.plot(t, y, pen=pen)
+
             elif self.function_box.currentText() == 'User defined function':
                 hyper = eval(self.hyperparams.text())
                 y, tnew = user_func(t, x, hyper)
                 self.plotwidget.plot(tnew, y, pen=pen)
+
 # ----------------------------------------------------------------------------------------
 
     def selected(self):
@@ -162,21 +184,31 @@ class MainWindow(QMainWindow):
             self.samplingrate.setEnabled(False)
             self.forcycles.setEnabled(False)
             self.hyperparams.setEnabled(False)
+            self.lambda_value.setEnabled(False)
         elif self.function_box.currentText() == 'Windowed Phasor':
             self.threshold.setEnabled(False)
             self.samplingrate.setEnabled(True)
             self.hyperparams.setEnabled(False)
             self.forcycles.setEnabled(True)
+            self.lambda_value.setEnabled(False)
         elif self.function_box.currentText() == 'User defined function':
             self.threshold.setEnabled(False)
             self.samplingrate.setEnabled(False)
             self.forcycles.setEnabled(False)
             self.hyperparams.setEnabled(True)
+            self.lambda_value.setEnabled(False)
+        elif self.function_box.currentText() == 'Trend filter':
+            self.threshold.setEnabled(False)
+            self.samplingrate.setEnabled(False)
+            self.forcycles.setEnabled(False)
+            self.hyperparams.setEnabled(False)
+            self.lambda_value.setEnabled(True)
         else:
             self.threshold.setEnabled(False)
             self.samplingrate.setEnabled(False)
             self.forcycles.setEnabled(False)
             self.hyperparams.setEnabled(False)
+            self.lambda_value.setEnabled(False)
 
 # --------------------------------------------------------------------------------------------
 
@@ -266,7 +298,11 @@ class MainWindow(QMainWindow):
 
 # -----------------------------------------------------------------------------------------------------
 
-#PDF = "C:/Users/dixit/OneDrive/Desktop/Ajey/Project/DRs/QT/Post_processing/hello.txt"
+    def guide_show(self):
+        self.guide = guide1()
+        self.guide.show()
+
+# -----------------------------------------------------------------------------------------------------
 
 class guide1(QtWebEngineWidgets.QWebEngineView):
     def __init__(self):

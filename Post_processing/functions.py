@@ -292,3 +292,20 @@ def sequencetransform(va, vb, vc, t):
 # w = 1*2*np.pi*50
 # gamma = 90
 ###########################################################################################
+
+def trendfilter(t, x, lamda1):
+    n = len(t)
+
+    I = np.eye(n)
+    D = np.zeros((n-1, n))
+
+    pp = 0
+    for kk in range(n-2):
+        D[kk, 0+pp:3+pp] = [1, -2, 1]
+        pp += 1
+
+    y = np.linalg.inv(I+2*lamda1*np.transpose(D)@D)@x[0:n]
+
+    return y
+
+############################################################################################
